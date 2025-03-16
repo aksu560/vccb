@@ -1,8 +1,10 @@
-use std::fmt::{write, Display, Formatter};
+use std::fmt::{Display, Formatter};
 use std::ops::{BitAnd, BitOr, BitXor, BitAndAssign, BitOrAssign, BitXorAssign, Not};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+/// Singular Bitboard.
 pub struct Bitboard {
+    /// Raw bits. u64 for convention/ease of use.
     raw: u64
 }
 
@@ -11,6 +13,7 @@ impl Bitboard {
         Bitboard { raw: 0 }
     }
 
+    /// Create a 2D array of characters for visually representing a bitboard.
     pub fn get_display_arr(&self) -> [[char; 8]; 8] {
         let mut out = [[' '; 8]; 8];
         let mut internal = self.raw;
@@ -107,7 +110,7 @@ mod tests {
     }
 
     #[test]
-    fn from_raw_test() {
+    fn from_u64_test() {
         let bitboard = Bitboard::from(1);
         assert_eq!(bitboard.raw, 1);
     }

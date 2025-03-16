@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use crate::bitboard::Bitboard;
 
 pub enum Sides {
@@ -7,7 +8,13 @@ pub enum Sides {
 }
 
 #[derive(Debug, Clone, Copy)]
+/// Struct for board state.
 pub struct Board {
+    /// Collection of Bitboards associated with the board. The structure means we can do things like
+    /// getting all white pawns like so:
+    /// ```
+    /// Bitboard.bb[Sides:White][Pieces:Pawn]
+    /// ```
     pub bb: [[Bitboard; 6]; 2]
 }
 
@@ -17,7 +24,7 @@ impl Board {
             bb: [[Bitboard::new(); 6]; 2]
         }
     }
-
+    /// Get all pieces on side of a board.
     pub fn get_side(self, side: Sides) -> Bitboard {
         match side {
             Sides::Both => {
@@ -30,6 +37,17 @@ impl Board {
                 }
                 out
             }
+        }
+    }
+}
+
+/// Generate a Board struct from the first part of a FEN string.
+impl From<String> for Board {
+    fn from(_: String) -> Board {
+        let mut bb = [[Bitboard::new(); 6]; 2];
+
+        Board {
+            bb
         }
     }
 }
