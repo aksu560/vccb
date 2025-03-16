@@ -1,5 +1,6 @@
 use std::fmt::{Display, Formatter};
 use std::ops::{BitAnd, BitOr, BitXor, BitAndAssign, BitOrAssign, BitXorAssign, Not};
+use crate::squares::{File, Square};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 /// Singular Bitboard.
@@ -85,6 +86,13 @@ impl Display for Bitboard {
         write!(f, "{}", out)
     }
 }
+impl From<Square> for Bitboard {
+    fn from(sq: Square) -> Bitboard {
+        let mut out_raw = 1u64;
+        out_raw = out_raw << u8::from(sq);
+        Bitboard { raw: out_raw }
+    }
+}
 
 impl From<u64> for Bitboard {
     fn from(raw: u64) -> Bitboard {
@@ -120,5 +128,15 @@ mod tests {
         let bitboard = Bitboard::from(7340935899360034705);
         let correct = "X . X . . X X . \n. . . . . X X X \n. X X X X X . . \n. X X X . . X . \n. . . X X X X . \n. . X . . . X . \nX X X X X X X . \nX . . . X . . X \n";
         assert_eq!(format!("{}", bitboard), correct);
+    }
+
+    #[test]
+    fn from_square_test() {
+        let bitboard = Bitboard::from(Square {
+            rank: 6,
+            file: File::D
+        });
+        let target_bb = Bitboard::from(8796093022208);
+        assert_eq!(bitboard, target_bb);
     }
 }

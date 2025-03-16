@@ -1,12 +1,26 @@
+use std::ops::Not;
 use crate::bitboard::Bitboard;
-use crate::moves::{Move, Square};
 use crate::pieces::Pieces::{KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN};
+use crate::squares::Square;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Sides {
     White = 0,
     Black = 1,
     Both = 2,
+    Neither = 3,
+}
+
+impl Not for Sides {
+    type Output = Sides;
+    fn not(self) -> Self::Output {
+        match self {
+            Sides::White => Sides::Black,
+            Sides::Black => Sides::White,
+            Sides::Both => Sides::Neither,
+            Sides::Neither => Sides::Both,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -23,7 +37,6 @@ pub struct Board {
     pub en_passant: Option<Square>,
     pub progress: u64,
     pub current_move: u64,
-
 }
 
 impl Board {
@@ -42,6 +55,9 @@ impl Board {
         match side {
             Sides::Both => {
                 self.get_side(Sides::White) | self.get_side(Sides::Black)
+            },
+            Sides::Neither => {
+              !self.get_side(Sides::Both)
             },
             _ => {
                 let mut out = Bitboard::new();
@@ -142,6 +158,7 @@ mod tests {
         b.bb[Sides::Black as usize][KING as usize] |= Bitboard::from(1152921504606846976);
 
         assert_eq!(b.get_side(Sides::Both), Bitboard::from(1152921504606846992));
+        assert_eq!(b.get_side(Sides::Neither), Bitboard::from(17293822569102704623));
     }
 
     #[test]

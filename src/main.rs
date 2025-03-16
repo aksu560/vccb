@@ -1,11 +1,17 @@
 use crate::bitboard::Bitboard;
-use crate::board::{Board, Sides};
-use crate::pieces::Pieces;
+use crate::squares::{File, Square};
 
 mod bitboard;
 mod pieces;
 mod board;
+mod moves;
+mod validation;
+mod squares;
 
 fn main() {
-    let mut foo = Board::new();
+    let bitboard = Bitboard::from(Square {
+        rank: 1,
+        file: File::A
+    });
+    println!("{}", bitboard);
 }
