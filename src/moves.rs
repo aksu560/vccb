@@ -1,12 +1,13 @@
-use crate::board::{Board, Sides};
+use crate::board::Sides;
 use crate::pieces::Pieces;
 use crate::squares::Square;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Move {
-    side: Sides,
-    piece: Pieces,
-    from: Square,
-    to: Square,
-    capture: bool,
+    pub side: Sides,
+    pub piece: Pieces,
+    pub from: Square,
+    pub to: Square,
+    pub capture: bool,
+    pub promote: Option<Pieces>,
 }

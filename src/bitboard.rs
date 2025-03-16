@@ -41,7 +41,7 @@ impl BitAnd for Bitboard {
 
 impl BitAndAssign for Bitboard {
     fn bitand_assign(&mut self, other: Bitboard) {
-        self.raw |= other.raw;
+        self.raw &= other.raw;
     }
 }
 
@@ -86,6 +86,7 @@ impl Display for Bitboard {
         write!(f, "{}", out)
     }
 }
+
 impl From<Square> for Bitboard {
     fn from(sq: Square) -> Bitboard {
         let mut out_raw = 1u64;
@@ -100,6 +101,21 @@ impl From<u64> for Bitboard {
     }
 }
 
+impl From<Bitboard> for Vec<Square> {
+    fn from(value: Bitboard) -> Self {
+        let mut out: Vec<Square> = Vec::with_capacity(64);
+        let mut local = value.raw;
+
+        for i in 0..64 {
+            if local & 1 == 1 {
+                out.push(Square::from(i));
+            }
+            local >>= 1;
+        }
+        out
+    }
+}
+
 impl Not for Bitboard {
     type Output = Bitboard;
     fn not(self) -> Bitboard {
@@ -110,6 +126,7 @@ impl Not for Bitboard {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::squares::Square;
 
     #[test]
     fn new_test() {
@@ -138,5 +155,21 @@ mod tests {
         });
         let target_bb = Bitboard::from(8796093022208);
         assert_eq!(bitboard, target_bb);
+    }
+
+    #[test]
+    fn bitboard_into_vec_test() {
+        let bitboard = Bitboard::from(18);
+        let vec: Vec<Square> = vec![
+            Square {
+                rank: 1,
+                file: File::B,
+            },
+            Square {
+                rank: 1,
+                file: File::E,
+            },
+        ];
+        assert_eq!(Vec::<Square>::from(bitboard), vec);
     }
 }

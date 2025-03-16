@@ -125,7 +125,7 @@ impl From<&str> for Board {
 
         b.en_passant = match fen_split[3] {
             "-" => None,
-            _ => Some(Square::from(fen_split[3]))
+            _ => Some(Square::from(fen_split[3].to_uppercase().as_ref()))
         };
 
         b.progress = fen_split[4].parse::<u64>().unwrap();
@@ -188,7 +188,7 @@ mod tests {
 
     #[test]
     fn fen_test_perft_pos_3() {
-        let mut b = Board::from("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 b Kq - 3 37");
+        let b = Board::from("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 b Kq - 3 37");
         let mut target_castle = [[false; 2]; 2];
         target_castle[Sides::White as usize][KING as usize] = true;
         target_castle[Sides::Black as usize][QUEEN as usize] = true;
