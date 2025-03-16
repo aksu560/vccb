@@ -1,3 +1,4 @@
+#[derive(Copy, Clone, Debug)]
 pub enum Pieces {
     KING = 0,
     QUEEN = 1,

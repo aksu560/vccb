@@ -5,7 +5,7 @@ use std::ops::{BitAnd, BitOr, BitXor, BitAndAssign, BitOrAssign, BitXorAssign, N
 /// Singular Bitboard.
 pub struct Bitboard {
     /// Raw bits. u64 for convention/ease of use.
-    raw: u64
+    pub raw: u64
 }
 
 impl Bitboard {
