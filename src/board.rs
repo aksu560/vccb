@@ -1,4 +1,3 @@
-use std::str::FromStr;
 use crate::bitboard::Bitboard;
 use crate::pieces::Pieces::{KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN};
 

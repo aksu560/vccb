@@ -6,5 +6,4 @@ pub enum Pieces {
     BISHOP = 3,
     KNIGHT = 4,
     PAWN = 5,
-    NONE = 6
 }
