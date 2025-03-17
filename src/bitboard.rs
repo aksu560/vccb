@@ -1,6 +1,6 @@
 use std::fmt::{Display, Formatter};
 use std::ops::{BitAnd, BitOr, BitXor, BitAndAssign, BitOrAssign, BitXorAssign, Not};
-use crate::squares::{File, Square};
+use crate::squares::Square;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 /// Singular Bitboard.
@@ -87,10 +87,16 @@ impl Display for Bitboard {
     }
 }
 
+impl Default for Bitboard {
+    fn default() -> Bitboard {
+        Bitboard::new()
+    }
+}
+
 impl From<Square> for Bitboard {
     fn from(sq: Square) -> Bitboard {
         let mut out_raw = 1u64;
-        out_raw = out_raw << u8::from(sq);
+        out_raw <<= u8::from(sq);
         Bitboard { raw: out_raw }
     }
 }
@@ -125,8 +131,10 @@ impl Not for Bitboard {
 
 #[cfg(test)]
 mod tests {
+    use crate::board::{Board, Sides};
+    use crate::pieces::Pieces;
     use super::*;
-    use crate::squares::Square;
+    use crate::squares::{File, Square};
 
     #[test]
     fn new_test() {
@@ -171,5 +179,14 @@ mod tests {
             },
         ];
         assert_eq!(Vec::<Square>::from(bitboard), vec);
+    }
+
+    #[test]
+    fn get_side_bb_test() {
+        let mut b = Board::new();
+        b.bb[Sides::White as usize][Pieces::Pawn as usize] = Bitboard::from(9007199321849860);
+        b.bb[Sides::Black as usize][Pieces::Pawn as usize] = Bitboard::from(671088672);
+
+        assert_eq!(b.get_side_bb(Sides::Both).raw, 9007199992938532);
     }
 }
