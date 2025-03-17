@@ -120,7 +120,6 @@ impl Board {
         }
 
         bb_acc &= !self.get_side_bb(self.to_move);
-        println!("{}", bb_acc);
         Vec::<Square>::from(bb_acc)
     }
 }
