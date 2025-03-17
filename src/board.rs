@@ -1,3 +1,4 @@
+use std::fmt::{Display, Formatter};
 use std::ops::Not;
 use crate::bitboard::Bitboard;
 use crate::pieces::Pieces::{King, Queen, Rook, Bishop, Knight, Pawn};
@@ -67,6 +68,42 @@ impl Board {
                 out
             }
         }
+    }
+}
+
+impl Display for Board {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let mut out = String::new();
+        let mut test_bit = 1;
+        for i in 0..64 {
+            let mut curr_c = '.';
+            out.push(match i % 8 {
+                0 => '\n',
+                _ => ' '
+            });
+
+            if self.bb[Sides::White as usize][Pawn as usize].raw & test_bit != 0 { curr_c = 'P'; }
+            if self.bb[Sides::Black as usize][Pawn as usize].raw & test_bit != 0 { curr_c = 'p'; }
+            if self.bb[Sides::White as usize][Knight as usize].raw & test_bit != 0 { curr_c = 'K'; }
+            if self.bb[Sides::Black as usize][Knight as usize].raw & test_bit != 0 { curr_c = 'k'; }
+            if self.bb[Sides::White as usize][Bishop as usize].raw & test_bit != 0 { curr_c = 'B'; }
+            if self.bb[Sides::Black as usize][Bishop as usize].raw & test_bit != 0 { curr_c = 'b'; }
+            if self.bb[Sides::White as usize][Rook as usize].raw & test_bit != 0 { curr_c = 'R'; }
+            if self.bb[Sides::Black as usize][Rook as usize].raw & test_bit != 0 { curr_c = 'r'; }
+            if self.bb[Sides::White as usize][Queen as usize].raw & test_bit != 0 { curr_c = 'Q'; }
+            if self.bb[Sides::Black as usize][Queen as usize].raw & test_bit != 0 { curr_c = 'q'; }
+            if self.bb[Sides::White as usize][King as usize].raw & test_bit != 0 { curr_c = 'K'; }
+            if self.bb[Sides::Black as usize][King as usize].raw & test_bit != 0 { curr_c = 'k'; }
+
+            out.push(curr_c);
+            test_bit <<= 1;
+        }
+        let lines = out.split('\n').collect::<Vec<&str>>();
+        let mut out_vec: Vec<String> = Vec::new();
+        for line in lines.iter().rev() {
+            out_vec.push(line.to_string());
+        }
+        write!(f, "{}", out_vec.join("\n"))
     }
 }
 
