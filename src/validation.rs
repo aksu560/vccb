@@ -7,12 +7,12 @@ impl Board {
         let mut bb_acc: Bitboard = Bitboard::new();
 
         let single_mov = Bitboard::from(Square::from(u8::from(start) + 8));
-        if (single_mov & self.get_side(Sides::Both)).raw == 0 {
+        if (single_mov & self.get_side_bb(Sides::Both)).raw == 0 {
             bb_acc |= single_mov;
 
             if start.rank == 2  {
                 let double_mov = Bitboard::from(Square::from(u8::from(start) + 16));
-                if (double_mov & self.get_side(Sides::Both)).raw == 0 {
+                if (double_mov & self.get_side_bb(Sides::Both)).raw == 0 {
                     bb_acc |= double_mov;
                 }
             }
@@ -26,7 +26,7 @@ impl Board {
             attack_bb |= Bitboard::from(Square::from(u8::from(start) + 9));
         }
 
-        let mut hostile_squares = self.get_side(Sides::Black);
+        let mut hostile_squares = self.get_side_bb(Sides::Black);
 
         match self.en_passant {
             None => {}
@@ -44,12 +44,12 @@ impl Board {
         let mut bb_acc: Bitboard = Bitboard::new();
 
         let single_mov = Bitboard::from(Square::from(u8::from(start) - 8));
-        if (single_mov & self.get_side(Sides::Both)).raw == 0 {
+        if (single_mov & self.get_side_bb(Sides::Both)).raw == 0 {
             bb_acc |= single_mov;
 
             if start.rank == 7  {
                 let double_mov = Bitboard::from(Square::from(u8::from(start) - 16));
-                if (double_mov & self.get_side(Sides::Both)).raw == 0 {
+                if (double_mov & self.get_side_bb(Sides::Both)).raw == 0 {
                     bb_acc |= double_mov;
                 }
             }
@@ -63,7 +63,7 @@ impl Board {
             attack_bb |= Bitboard::from(Square::from(u8::from(start) - 9));
         }
 
-        let mut hostile_squares = self.get_side(Sides::White);
+        let mut hostile_squares = self.get_side_bb(Sides::White);
 
         match self.en_passant {
             None => {}
@@ -74,6 +74,52 @@ impl Board {
 
         attack_bb &= hostile_squares;
         bb_acc |= attack_bb;
+        println!("{}", bb_acc);
+        Vec::<Square>::from(bb_acc)
+    }
+
+    pub fn knight_target_squares(self, start: Square) -> Vec<Square> {
+        // https://www.chessprogramming.org/Knight_Pattern
+        let mut bb_acc = Bitboard::new();
+
+        if start.file != File::A {
+
+            if start.rank < 7 {
+                bb_acc |= Bitboard::from(Square::from(u8::from(start) + 15));
+            }
+            if start.rank > 2 {
+                bb_acc |= Bitboard::from(Square::from(u8::from(start) - 17));
+            }
+
+            if start.file != File::B {
+                if start.rank < 8 {
+                    bb_acc |= Bitboard::from(Square::from(u8::from(start) + 6));
+                }
+                if start.rank > 1 {
+                    bb_acc |= Bitboard::from(Square::from(u8::from(start) - 10));
+                }
+            }
+        }
+        if start.file != File::H {
+
+            if start.rank < 7 {
+                bb_acc |= Bitboard::from(Square::from(u8::from(start) + 17));
+            }
+            if start.rank > 2 {
+                bb_acc |= Bitboard::from(Square::from(u8::from(start) - 15));
+            }
+
+            if start.file != File::G {
+                if start.rank < 8 {
+                    bb_acc |= Bitboard::from(Square::from(u8::from(start) + 10));
+                }
+                if start.rank > 1 {
+                    bb_acc |= Bitboard::from(Square::from(u8::from(start) - 6));
+                }
+            }
+        }
+
+        bb_acc &= !self.get_side_bb(self.to_move);
         println!("{}", bb_acc);
         Vec::<Square>::from(bb_acc)
     }
@@ -151,6 +197,33 @@ mod tests {
         assert_eq!(board.black_pawn_target_squares(Square::from(Square {
             rank: 4,
             file: File::D,
+        })).len(), 2);
+    }
+
+    #[test]
+    fn test_knight_target_squares() {
+        let b = Board::from("8/8/8/8/2N5/8/8/8 w - - 0 1");
+        assert_eq!(b.knight_target_squares(Square::from(Square {
+            rank: 4,
+            file: File::C,
+        })).len(), 8);
+
+        let b = Board::from("8/8/3R4/8/2N5/8/8/8 w - - 0 1");
+        assert_eq!(b.knight_target_squares(Square::from(Square {
+            rank: 4,
+            file: File::C,
+        })).len(), 7);
+
+        let b = Board::from("8/8/3R4/8/8/8/8/N7 w - - 0 1");
+        assert_eq!(b.knight_target_squares(Square::from(Square {
+            rank: 1,
+            file: File::A,
+        })).len(), 2);
+
+        let b = Board::from("8/8/3R4/8/8/8/8/7N w - - 0 1");
+        assert_eq!(b.knight_target_squares(Square::from(Square {
+            rank: 8,
+            file: File::A,
         })).len(), 2);
     }
 }

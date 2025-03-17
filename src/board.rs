@@ -51,13 +51,13 @@ impl Board {
         }
     }
     /// Get all pieces on side of a board.
-    pub fn get_side(self, side: Sides) -> Bitboard {
+    pub fn get_side_bb(self, side: Sides) -> Bitboard {
         match side {
             Sides::Both => {
-                self.get_side(Sides::White) | self.get_side(Sides::Black)
+                self.get_side_bb(Sides::White) | self.get_side_bb(Sides::Black)
             },
             Sides::Neither => {
-              !self.get_side(Sides::Both)
+              !self.get_side_bb(Sides::Both)
             },
             _ => {
                 let mut out = Bitboard::new();
@@ -157,8 +157,8 @@ mod tests {
         b.bb[Sides::White as usize][KING as usize] |= Bitboard::from(16);
         b.bb[Sides::Black as usize][KING as usize] |= Bitboard::from(1152921504606846976);
 
-        assert_eq!(b.get_side(Sides::Both), Bitboard::from(1152921504606846992));
-        assert_eq!(b.get_side(Sides::Neither), Bitboard::from(17293822569102704623));
+        assert_eq!(b.get_side_bb(Sides::Both), Bitboard::from(1152921504606846992));
+        assert_eq!(b.get_side_bb(Sides::Neither), Bitboard::from(17293822569102704623));
     }
 
     #[test]
