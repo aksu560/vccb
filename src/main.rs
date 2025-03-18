@@ -1,20 +1,11 @@
-#![allow(dead_code)]
+use crate::game::Game;
+use crate::search::search;
 
-use crate::board::Board;
-use crate::squares::{File, Square};
-
-mod bitboard;
-mod pieces;
-mod board;
-mod moves;
-mod validation;
-mod squares;
+mod game;
+mod search;
 
 fn main() {
-    let board = Board::new();
+    let g = Game::new();
 
-    board.rook_target_squares(Square {
-        rank: 3,
-        file: File::D
-    });
+    println!("{}", search(g));
 }

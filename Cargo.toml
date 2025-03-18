@@ -5,3 +5,4 @@ edition = "2024"
 authors = ["Aleksi 'Aksu' Väisänen"]
 
 [dependencies]
+cozy-chess = "0.3.4"
