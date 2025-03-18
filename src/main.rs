@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use crate::board::Board;
+use crate::squares::{File, Square};
 
 mod bitboard;
 mod pieces;
@@ -10,5 +11,10 @@ mod validation;
 mod squares;
 
 fn main() {
-    println!("{}", Board::from("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+    let board = Board::new();
+
+    board.rook_target_squares(Square {
+        rank: 3,
+        file: File::D
+    });
 }

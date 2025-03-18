@@ -3,6 +3,8 @@ use crate::bitboard::Bitboard;
 use crate::board::{Board, Sides};
 use crate::squares::{File, Square};
 
+// Move generation. Mostly written for the sake of writing it, I may very well replace this, and
+// the entirety of the move generation by https://github.com/analog-hors/cozy-chess. We shall see.
 impl Board {
     pub fn white_pawn_target_squares(self, start: Square) -> Vec<Square> {
         let mut bb_acc: Bitboard = Bitboard::new();
@@ -121,6 +123,20 @@ impl Board {
         }
 
         bb_acc &= !self.get_side_bb(self.to_move);
+        Vec::<Square>::from(bb_acc)
+    }
+
+    pub fn rook_target_squares(self, start: Square) -> Vec<Square> {
+        let bb_acc = Bitboard::new();
+        let mut file_bb = Bitboard::from(72340172838076673);
+        let mut rank_bb = Bitboard::from(255);
+        let mut blocker_bb = self.get_side_bb(Sides::Both);
+
+        file_bb.raw <<= start.file as u16;
+        rank_bb.raw <<= (start.rank - 1) * 8;
+
+        println!("{}", file_bb | rank_bb);
+
         Vec::<Square>::from(bb_acc)
     }
 }
